@@ -1,11 +1,10 @@
-// Shubhambohra2003@gmail.com : 4a92330d3bc64b9e8db888ea42edb5b8
-// En20cs302045@medicaps.ac.in : d013396a078d4581b4e4e565cf6f3e3f
 import React, { useState,useEffect } from 'react'
 import NewsItem from './NewsItem'
 import Spinner from './Spinner';
 import propTypes from 'prop-types'
 import InfiniteScroll from 'react-infinite-scroll-component';
 import EndMessage from './EndMessage';
+import SearchKeyword from './SearchKeyword';
 
   const News = (props)=>{ 
     
@@ -42,40 +41,101 @@ import EndMessage from './EndMessage';
     //     }
         
     //   ]
-    const [articles, setArticles] = useState([])
     const [loading, setLoading] = useState(true)
+    const [articles, setArticles] = useState([])
     const [page, setPage] = useState(1)
     const [totalResults, setTotalResults] = useState(0)
-    
+    const [searchBox, setSearchBox] = useState(false)
+    const [searchKeywords, setSearchKeywords] = useState("")
     
     const capitalizeFirstLetter = (string)=> {
       return string.charAt(0).toUpperCase() + string.slice(1);
     }
     
-    
-    const  updateNews = async()=>{
+    const  updateNews = async()=>{  
+      // { !searchBox &&
       props.setProgress(10);
-      // const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page}&pageSize=${props.pageSize}`;
-      const url = `https://newsapi.org/v2/top-headlines?country=&category=&language=en&apiKey=${props.apiKey}&page=${page}&pageSize=${props.pageSize}`;
       setLoading(true);
-      let data= await fetch(url);
-      props.setProgress(40);
-      let parsedData = await data.json();
+      await fetch(  `https://newsapi.org/v2/${props.type}?q=${props.type=== "everything" ? searchKeywords :""}&country=${props.country}&category=${props.category}&language=${props.language}&sortBy=${props.sortBy}&apiKey=${props.apiKey}&page=${page}&pageSize=${props.pageSize}`)
+      .then(res =>{ return  res.json()})
+      .then(
+        data => {
+          setArticles(data.articles),
+          setTotalResults(data.totalResults)
+          // console.log(data)
+        }
+        )
+        .catch(err=> console.log(err));
+        props.setProgress(40);
       props.setProgress(70);
-      setArticles(parsedData.articles);
-      setTotalResults(parsedData.totalResults);
+      
       setLoading(false);
       props.setProgress(100);
-      console.log(url);
-      console.log(articles.length);
+
+
+      //   let data= await fetch(url);
+      // let parsedData = await data.json();
+      // setArticles(parsedData.articles);
+      // setTotalResults(parsedData.totalResults);
+
+
     }
     
-    useEffect(() => {          
+    // const  updateNews = async()=>{
+
+        
+    //   // { !searchBox &&
+    //     props.setProgress(10);
+    //     // const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page}&pageSize=${props.pageSize}`;
+    //     // const url = `https://newsapi.org/v2/top-headlines?country=&category=&language=en&apiKey=${props.apiKey}&page=${page}&pageSize=${props.pageSize}`;
+    //     // https://newsapi.org/v2/top-headlines?country=&category=&language=en&sortBy=&apiKey=4a92330d3bc64b9e8db888ea42edb5b8&page=1&pageSize=100
+      
+    //     // const url = `https://newsapi.org/v2/top-headlines?country=&category=&language=en&apiKey=${props.apiKey}&page=${page}&pageSize=${props.pageSize}`;
+    //     const url = `https://newsapi.org/v2/${props.type}?q=${props.type=== "everything" ? searchKeywords :""}&country=${props.country}&category=${props.category}&language=${props.language}&sortBy=${props.sortBy}&apiKey=${props.apiKey}&page=${page}&pageSize=${props.pageSize}`;
+    //     setLoading(true);
+    //     let data= await fetch(url);
+    //     props.setProgress(40);
+    //   let parsedData = await data.json();
+    //   props.setProgress(70);
+    //   setArticles(parsedData.articles);
+    //   setTotalResults(parsedData.totalResults);
+    //   setLoading(false);
+    //   props.setProgress(100);
+    //   console.log(url);
+    //   // console.log(articles.length);
+    // // }
+    // // catch(err=>{
+    // //   console.log(err.message);
+    // // })
+    
+
+    // setTimeout(() => {
+      
+    //   if(articles.length===0){
+    //     console.log("No articles");
+    //   }
+    // }, 1000);
+    // }
+
+    useEffect(() => { 
+      // console.log(articles);
+      // {!searchBox && updateNews()}
       // updateNews();
-      console.log(articles.length);
+      
+      if(props.type==="everything"){
+        setSearchBox(true);
+        // setLoading(false);
+        
+        // updateNews();
+      }
+      else{
+        setSearchBox(false);
+        // updateNews();
+      }
+      // console.log(articles.length);
     }, [])
     useEffect(() => {          
-      document.title = `${capitalizeFirstLetter(props.category)} - NewsMonkey`;
+      document.title = `${capitalizeFirstLetter(props.name)} - NewsMonkey`;
     }, [props.category])
         
       
@@ -90,7 +150,10 @@ import EndMessage from './EndMessage';
     
     const fetchMoreData = async ()=>{
       // const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page+1}&pageSize=${props.pageSize}`;
-      const url = `https://newsapi.org/v2/top-headlines?country=&category=&language=en&apiKey=${props.apiKey}&page=${page+1}&pageSize=${props.pageSize}`;
+      // const url = `https://newsapi.org/v2/top-headlines?country=&category=&language=en&apiKey=${props.apiKey}&page=${page+1}&pageSize=${props.pageSize}`;
+
+      // const url = `https://newsapi.org/v2/${props.type}?q=&country=${props.country}&category=${props.category}&language=${props.language}&sortBy=${props.sortBy}&apiKey=${props.apiKey}&page=${page}&pageSize=${props.pageSize}`;
+      const url = `https://newsapi.org/v2/${props.type}?q=${props.type === "everything" ? searchKeywords :""}&country=${props.country}&category=${props.category}&language=${props.language}&sortBy=${props.sortBy}&apiKey=${props.apiKey}&page=${page+1}&pageSize=${props.pageSize}`;
       setPage( page + 1)
       let data= await fetch(url);
       let parsedData = await data.json();
@@ -100,19 +163,28 @@ import EndMessage from './EndMessage';
 
     return (
       <>
-        <h1 className='text-center' style={{margin: "70px 0px 15px 0px"}}>NewsMonkey - Top {capitalizeFirstLetter(props.category)} Headlines</h1>
+
+        <h1 className='text-center' style={{margin: "70px 0px 15px 0px"}}>NewsMonkey - Top {capitalizeFirstLetter(props.name)} Headlines</h1>
+        {/* <h1 className='text-center' style={{margin: "70px 0px 15px 0px"}}>NewsMonkey - Top {capitalizeFirstLetter(props.category)} Headlines</h1> */}
+        {/* <div>{searchKeywords}</div> */}
+        {searchBox && <SearchKeyword setSearchBox={setSearchBox} setSearchKeywords={setSearchKeywords} updateNews={updateNews} />}
         {/* <div className="container d-flex justify-content-between">
           <button type='button' className='btn btn-dark'onClick={handlePrevClick} disabled={page <=1}> &larr; Previous</button>
           <button type='button' className='btn btn-dark'onClick={handleNextClick} disabled={page+1 > Math.ceil(totalResults/props.pageSize)}>Next &rarr; </button>
         </div> */}
-        {loading && <Spinner/>}
-        <InfiniteScroll
+
+{/* {(loading && <Spinner/>) || (props.type=== "everything")} */}
+{(loading && props.type!== "everything") && (<Spinner/>)}
+        {/* {!searchBox && */}
+
+{/* { articles.length?  */}
+<InfiniteScroll
         dataLength={articles.length}
         next={fetchMoreData}
         hasMore={articles.length !== totalResults && articles.length<100}
         // hasMore={articles.length !== totalResults }
         loader={<Spinner/>}
-        endMessage={<EndMessage loading={loading}/>}
+        endMessage={<EndMessage loading={loading} articles={articles}/>}
         >
 
             <div className="container">
@@ -128,7 +200,17 @@ import EndMessage from './EndMessage';
         </div>
         </InfiniteScroll>
 
-        {/* {!loading && 
+   {/* :
+   ( 
+     props.type=== "everything" ?
+    //  updateNews.ok ?
+     <div className='container d-flex justify-content-center text-center'><h1> &uarr; <br /> Enter Valid keywords Above</h1></div> 
+    : ""
+  ) 
+ }    */}
+ 
+ {/* } */}
+ {/* {!loading && 
         <div className="container d-flex justify-content-between">
         <button type='button' className='btn btn-dark'onClick={handlePrevClick} disabled={page <=1}> &larr; Previous</button>
         <button type='button' className='btn btn-dark'onClick={handleNextClick} disabled={page+1 > Math.ceil(totalResults/props.pageSize)}>Next &rarr; </button>
