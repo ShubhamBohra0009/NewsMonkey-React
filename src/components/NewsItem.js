@@ -15,12 +15,7 @@ import inf from "./Inf.jpg"
         <img   src={!imageUrl? inf :imageUrl} className="card-img-top"  alt="..."/>
 
         <div className="card-body ">
-          {/* title portion */}
-            {/* <h5 style={{display: "inline"}} className="card-title">{props.title && (title_readMores ?title : title.substring(0,70))}...</h5>
-            <span style={{color:"#0d6efd"}} onClick={()=>{setTitle_readMores( !title_readMores)}}>{props.title && (title_readMores ? "Show Less" : "Show More")}</span> */}
             <h5  className="card-title">{title}</h5>
-
-          {/* Description portion */}
             <div className='mb-3'>
              <p style={{display: "inline"}} className="card-text">{props.description && (readMores ?description : description.substring(0,70))}...</p> 
             <span  style={{color:"#0d6efd"}} onClick={()=>{setReadMores( !readMores)}}>

@@ -53,7 +53,6 @@ import SearchKeyword from './SearchKeyword';
     }
     
     const  updateNews = async()=>{  
-      // { !searchBox &&
       props.setProgress(10);
       setLoading(true);
       await fetch(  `https://newsapi.org/v2/${props.type}?q=${props.type=== "everything" ? searchKeywords :""}&country=${props.country}&category=${props.category}&language=${props.language}&sortBy=${props.sortBy}&apiKey=${props.apiKey}&page=${page}&pageSize=${props.pageSize}`)
@@ -62,97 +61,30 @@ import SearchKeyword from './SearchKeyword';
         data => {
           setArticles(data.articles),
           setTotalResults(data.totalResults)
-          // console.log(data)
         }
         )
-        .catch(err=> console.log(err));
-        props.setProgress(40);
+      .catch(err=> console.log(err));
+      props.setProgress(40);
       props.setProgress(70);
-      
       setLoading(false);
       props.setProgress(100);
-
-
-      //   let data= await fetch(url);
-      // let parsedData = await data.json();
-      // setArticles(parsedData.articles);
-      // setTotalResults(parsedData.totalResults);
-
-
     }
-    
-    // const  updateNews = async()=>{
-
-        
-    //   // { !searchBox &&
-    //     props.setProgress(10);
-    //     // const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page}&pageSize=${props.pageSize}`;
-    //     // const url = `https://newsapi.org/v2/top-headlines?country=&category=&language=en&apiKey=${props.apiKey}&page=${page}&pageSize=${props.pageSize}`;
-    //     // https://newsapi.org/v2/top-headlines?country=&category=&language=en&sortBy=&apiKey=4a92330d3bc64b9e8db888ea42edb5b8&page=1&pageSize=100
-      
-    //     // const url = `https://newsapi.org/v2/top-headlines?country=&category=&language=en&apiKey=${props.apiKey}&page=${page}&pageSize=${props.pageSize}`;
-    //     const url = `https://newsapi.org/v2/${props.type}?q=${props.type=== "everything" ? searchKeywords :""}&country=${props.country}&category=${props.category}&language=${props.language}&sortBy=${props.sortBy}&apiKey=${props.apiKey}&page=${page}&pageSize=${props.pageSize}`;
-    //     setLoading(true);
-    //     let data= await fetch(url);
-    //     props.setProgress(40);
-    //   let parsedData = await data.json();
-    //   props.setProgress(70);
-    //   setArticles(parsedData.articles);
-    //   setTotalResults(parsedData.totalResults);
-    //   setLoading(false);
-    //   props.setProgress(100);
-    //   console.log(url);
-    //   // console.log(articles.length);
-    // // }
-    // // catch(err=>{
-    // //   console.log(err.message);
-    // // })
-    
-
-    // setTimeout(() => {
-      
-    //   if(articles.length===0){
-    //     console.log("No articles");
-    //   }
-    // }, 1000);
-    // }
 
     useEffect(() => { 
-      // console.log(articles);
-      // {!searchBox && updateNews()}
-      // updateNews();
-      
       if(props.type==="everything"){
         setSearchBox(true);
-        // setLoading(false);
-        
-        // updateNews();
       }
       else{
         setSearchBox(false);
-        // updateNews();
+        updateNews();
       }
-      // console.log(articles.length);
     }, [])
+
     useEffect(() => {          
       document.title = `${capitalizeFirstLetter(props.name)} - NewsMonkey`;
     }, [props.category])
         
-      
-    // const handlePrevClick = async ()=>{
-      //   setPage( page - 1,updateNews);
-    // }
-    // const handleNextClick = async ()=>{ 
-    //     // setPage( page + 1);
-    //     // updateNews();
-    //     setPage( page + 1,updateNews());
-    // }
-    
     const fetchMoreData = async ()=>{
-      // const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page+1}&pageSize=${props.pageSize}`;
-      // const url = `https://newsapi.org/v2/top-headlines?country=&category=&language=en&apiKey=${props.apiKey}&page=${page+1}&pageSize=${props.pageSize}`;
-
-      // const url = `https://newsapi.org/v2/${props.type}?q=&country=${props.country}&category=${props.category}&language=${props.language}&sortBy=${props.sortBy}&apiKey=${props.apiKey}&page=${page}&pageSize=${props.pageSize}`;
       const url = `https://newsapi.org/v2/${props.type}?q=${props.type === "everything" ? searchKeywords :""}&country=${props.country}&category=${props.category}&language=${props.language}&sortBy=${props.sortBy}&apiKey=${props.apiKey}&page=${page+1}&pageSize=${props.pageSize}`;
       setPage( page + 1)
       let data= await fetch(url);
@@ -163,35 +95,20 @@ import SearchKeyword from './SearchKeyword';
 
     return (
       <>
-
         <h1 className='text-center' style={{margin: "70px 0px 15px 0px"}}>NewsMonkey - Top {capitalizeFirstLetter(props.name)} Headlines</h1>
-        {/* <h1 className='text-center' style={{margin: "70px 0px 15px 0px"}}>NewsMonkey - Top {capitalizeFirstLetter(props.category)} Headlines</h1> */}
-        {/* <div>{searchKeywords}</div> */}
         {searchBox && <SearchKeyword setSearchBox={setSearchBox} setSearchKeywords={setSearchKeywords} updateNews={updateNews} />}
-        {/* <div className="container d-flex justify-content-between">
-          <button type='button' className='btn btn-dark'onClick={handlePrevClick} disabled={page <=1}> &larr; Previous</button>
-          <button type='button' className='btn btn-dark'onClick={handleNextClick} disabled={page+1 > Math.ceil(totalResults/props.pageSize)}>Next &rarr; </button>
-        </div> */}
+        {(loading && props.type!== "everything") && (<Spinner/>)}
 
-{/* {(loading && <Spinner/>) || (props.type=== "everything")} */}
-{(loading && props.type!== "everything") && (<Spinner/>)}
-        {/* {!searchBox && */}
-
-{/* { articles.length?  */}
-<InfiniteScroll
+        <InfiniteScroll
         dataLength={articles.length}
         next={fetchMoreData}
         hasMore={articles.length !== totalResults && articles.length<100}
-        // hasMore={articles.length !== totalResults }
         loader={<Spinner/>}
-        endMessage={<EndMessage loading={loading} articles={articles}/>}
-        >
+        endMessage={<EndMessage loading={loading} articles={articles}/>}>
 
-            <div className="container">
+        <div className="container">
         <div className="row">
-        {/* {!loading && articles.map((element)=>{ */}
         {articles.map((element)=>{
-          
           return  <div className="col-md-4 " key={element.url}> 
             <NewsItem title={element.title?element.title :""} description={element.description?element.description :""}  newsUrl={element.url} imageUrl={element.urlToImage} author={element.author} date={element.publishedAt} source={ element.source.name}/>
             </div>
@@ -199,25 +116,7 @@ import SearchKeyword from './SearchKeyword';
         </div>
         </div>
         </InfiniteScroll>
-
-   {/* :
-   ( 
-     props.type=== "everything" ?
-    //  updateNews.ok ?
-     <div className='container d-flex justify-content-center text-center'><h1> &uarr; <br /> Enter Valid keywords Above</h1></div> 
-    : ""
-  ) 
- }    */}
- 
- {/* } */}
- {/* {!loading && 
-        <div className="container d-flex justify-content-between">
-        <button type='button' className='btn btn-dark'onClick={handlePrevClick} disabled={page <=1}> &larr; Previous</button>
-        <button type='button' className='btn btn-dark'onClick={handleNextClick} disabled={page+1 > Math.ceil(totalResults/props.pageSize)}>Next &rarr; </button>
-        </div>
-      } */}
     </>
-      // </div> 
     )
   }
 
@@ -232,5 +131,4 @@ News.propTypes = {
   pageSize: propTypes.number,
   category: propTypes.string,
 }
-
 export default News
