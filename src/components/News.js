@@ -5,9 +5,9 @@ import propTypes from 'prop-types'
 import InfiniteScroll from 'react-infinite-scroll-component';
 import EndMessage from './EndMessage';
 import SearchKeyword from './SearchKeyword';
+import { LocalArticles } from '../sample/SampleArticles';
 
   const News = (props)=>{ 
-    
     // let articles = [
     //     {
     //       "source": { "id": "bbc-sport", "name": "BBC Sport" },
@@ -76,7 +76,8 @@ import SearchKeyword from './SearchKeyword';
       }
       else{
         setSearchBox(false);
-        updateNews();
+        // updateNews();
+        setArticles(LocalArticles)
       }
     }, [])
 

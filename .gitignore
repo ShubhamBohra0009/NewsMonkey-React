@@ -4,7 +4,7 @@
 /node_modules
 /.pnp
 .pnp.js
-sampleOutput.json
+# sampleOutput.json
 
 # testing
 /coverage

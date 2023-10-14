@@ -3,7 +3,7 @@ import LoadingBar from 'react-top-loading-bar';
 import React, { useState } from 'react'
 import Navbar from './components/Navbar';
 import News from './components/News';
-import ReactDOM from "react-dom/client";
+// import ReactDOM from "react-dom/client";
 import {BrowserRouter,Routes,Route,} from "react-router-dom";
 
   export default function App() {
@@ -15,10 +15,7 @@ import {BrowserRouter,Routes,Route,} from "react-router-dom";
     return (
       <>
         <BrowserRouter>
-      <LoadingBar
-        color='#f11946'
-        progress={progress}
-        />
+      <LoadingBar color='#f11946' progress={progress}/>
         <Navbar/>
       <Routes>
         <Route exact path='/' element={<News setProgress ={setProgress}  apiKey={apiKey} key="general" name="general" pageSize={pageSize} country="in" category="general" language="en" type="top-headlines" sortBy="" />} />
