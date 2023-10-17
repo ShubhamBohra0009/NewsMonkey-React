@@ -2,7 +2,7 @@ import LoadingBar from 'react-top-loading-bar';
 import React, {  useState } from 'react'
 import Navbar from './components/Navbar';
 import News from './components/News';
-import {BrowserRouter,Routes,Route, useNavigate, useLocation,} from "react-router-dom";
+import {BrowserRouter,Routes,Route,} from "react-router-dom";
 import Maincontext from './Context/MainContext'
 
   export default function App() {
