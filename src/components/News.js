@@ -36,9 +36,8 @@ import { useLocation } from 'react-router-dom';
       }
       else{
         setSearchBox(false);
-        console.log("inside useeffect")
-        // return () =>updateNews(); //for development purpose so that api doesn't get called twice
-        updateNews(); //for development purpose so that api doesn't get called twice
+        // return () =>updateNews(); //for development purpose so that api doesn't get called twice but remove it when pushing the final data for hosting
+        updateNews(); 
       }
     }, [])
 
@@ -54,14 +53,11 @@ import { useLocation } from 'react-router-dom';
       setProgress(10);
       setLoading(true);
       const apiUrl= `https://newsapi.org/v2/${type}?q=${type==="everything" ? searchKeywords :""}&country=${country}&category=${category}&language=${language}&sortBy=${sortBy}&apiKey=${apiKey}&page=${page}&pageSize=${pageSize}`;
-      console.log("update News called")
       try{
-        console.log("inside try")
         let response= await fetch(apiUrl);
         // const status = 404;
         // if(status===200){
           if(response.status===200 ){
-            console.log("inside if")
             var data= await response.json();
             // console.log(data);
             // console.log(data.totalResults);
@@ -70,14 +66,12 @@ import { useLocation } from 'react-router-dom';
             setNoteWarning(false);
           }
           else{
-            console.log("inside else")
             setArticles(LocalArticles);
             setTotalResults(LocalArticles.length)
             setNoteWarning(true);
           }
         }
         catch(error){
-        console.log("inside catch")
         console.log(error);
     }
 
