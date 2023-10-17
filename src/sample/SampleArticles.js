@@ -480,3 +480,163 @@ export const LocalArticles= [
 //         }
         
 //       ]
+
+
+
+// bootstrap garbage 
+
+
+// other
+
+// <div className="col-md-4">
+//       <div className="my-3">
+//   <div className="card" aria-hidden="true">
+//     <div
+//       style={{
+//         display: "flex",
+//         justifyContent: "flex-end",
+//         position: "absolute",
+//         right: "0",
+//     }}
+//     >
+//       <span className="placeholder col-2"></span>
+//     </div>
+//     <img
+//       src={loading}
+//       className="card-img-top"
+//       alt="..." height="240px" width="180px"
+//       style={{ display: "flex", justifyContent: "flex-end"  }}
+//     />
+//     <div className="card-body">
+//       <h5 className="card-title placeholder-glow">
+//         <span className="placeholder col-10"></span>
+//       </h5>
+//       <div className="mb-3">
+//         <p
+//           style={{ display: "inline" }}
+//           className="card-text placeholder-glow"
+//         >
+//           <span className="placeholder col-8"></span>
+//         </p>
+//       </div>
+//       <div>
+//         <p className="card-text">
+//           <small className="text-muted placeholder col-8"></small>
+//         </p>
+//         <a
+//           href="#"
+//           tabIndex="-1"
+//           className="btn btn-primary disabled placeholder col-4"
+//         ></a>
+//       </div>
+// </div>
+
+  
+//     </div>
+//     </div>
+//     </div>
+
+
+//     <div className="container">
+//     <div className="row">
+//     <div className="col-md-4"></div>
+//   <div className="my-3"></div>
+//     <div className="card">
+//     <img src="..." className="card-img-top" alt="..."/>
+  
+//     <div className="card-body">
+//       <h5 className="card-title">Card title</h5>
+//       <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+//       <a href="#" className="btn btn-primary">Go somewhere</a>
+//     </div>
+//     </div>
+//     </div>
+//   </div>
+  
+  
+
+//     <div className="container">
+//     <div className="row">
+//     <div className="col-md-4"></div>
+//     <div className='my-3'>
+//         <div className="card" >
+//           <div style={{display:"flex",justifyContent:"flex-end",position:"absolute",right: "0"}}>
+//               <span className='badge rounded-pill bg-danger' > </span>
+//           </div>
+//         <img   src="..." className="card-img-top"  alt="..."/>
+
+//         <div className="card-body ">
+//             <h5  className="card-title">
+//     <span className="placeholder col-6"></span>
+
+//             </h5>
+//             <div className='mb-3'>
+//              <p style={{display: "inline"}} className="card-text">...</p> 
+//             <span  style={{color:"#0d6efd"}} onClick={()=>{setReadMores( !readMores)}}>
+//              ...
+//             </span>
+//             </div>
+//             <div>
+//               <p className='card-text'><small className='text-muted '>...</small></p>
+//           <a href='...' target="_blank" className="btn btn-sm btn-dark mx-auto">Read More</a>
+//             </div>
+//             </div>
+//         </div>
+//       </div>
+//       </div>
+//       </div>
+
+
+//       <div className="container">
+//     <div className="row">
+//     <div className="col-md-4">
+
+//       <div className="my-3">
+//   <div className="card" aria-hidden="true">
+//     <div
+//       style={{
+//         display: "flex",
+//         justifyContent: "flex-end",
+//         position: "absolute",
+//         right: "0",
+//     }}
+//     >
+//       <span className="placeholder col-2"></span>
+//     </div>
+//     <img
+//       src={loading}
+//       className="card-img-top"
+//       alt="..." height="240px" width="180px"
+//       style={{ display: "flex", justifyContent: "flex-end"  }}
+//     />
+//     <div className="card-body">
+//       <h5 className="card-title placeholder-glow">
+//         <span className="placeholder col-8"></span>
+//       </h5>
+//       <div className="mb-3">
+//         <p
+//           style={{ display: "inline" }}
+//           className="card-text placeholder-glow"
+//         >
+//           <span className="placeholder col-12"></span>
+//         </p>
+//         <span style={{ color: "#0d6efd" }} className="placeholder col-3"></span>
+//       </div>
+//       <div>
+//         <p className="card-text">
+//           <small className="text-muted placeholder col-6"></small>
+//         </p>
+//         <a
+//           href="#"
+//           tabIndex="-1"
+//           className="btn btn-primary disabled placeholder col-4"
+//         ></a>
+//       </div>
+//     </div>
+//   </div>
+// </div>
+
+  
+//     </div>
+//     </div>
+//     </div>

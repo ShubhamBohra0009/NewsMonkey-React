@@ -1,10 +1,8 @@
 import React,{useState} from 'react'
-import inf from "./Inf.jpg"
+import inf from "../images/Inf.jpg"
 
-  const NewsItem = (props)=>{ 
-  const [title_readMores, setTitle_readMores] = useState(false);
+  const NewsItem = ({title, description,imageUrl,newsUrl,author,date,source})=>{ 
   const [readMores, setReadMores] = useState(false);
-    let {title, description,imageUrl,newsUrl,author,date,source}= props;
 
     return (
       <div className='my-3'>
@@ -17,9 +15,9 @@ import inf from "./Inf.jpg"
         <div className="card-body ">
             <h5  className="card-title">{title}</h5>
             <div className='mb-3'>
-             <p style={{display: "inline"}} className="card-text">{props.description && (readMores ?description : description.substring(0,70))}...</p> 
+             <p style={{display: "inline"}} className="card-text">{description && (readMores ?description : description.substring(0,70))}...</p> 
             <span  style={{color:"#0d6efd"}} onClick={()=>{setReadMores( !readMores)}}>
-             {props.description && (readMores ? "Show Less" : "Show More")}
+             {description && (readMores ? "Show Less" : "Show More")}
             </span>
             </div>
             <div>

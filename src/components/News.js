@@ -1,135 +1,144 @@
-import React, { useState,useEffect } from 'react'
+import React, { useState,useEffect, useContext } from 'react'
 import NewsItem from './NewsItem'
 import Spinner from './Spinner';
-import propTypes from 'prop-types'
 import InfiniteScroll from 'react-infinite-scroll-component';
 import EndMessage from './EndMessage';
 import SearchKeyword from './SearchKeyword';
 import { LocalArticles } from '../sample/SampleArticles';
+import Maincontext from '../Context/MainContext';
+import Skeleton from './Skeleton';
+import FetchMoreSkeleton from './FetchMoreSkeleton';
+import { useLocation } from 'react-router-dom';
 
-  const News = (props)=>{ 
-    // let articles = [
-    //     {
-    //       "source": { "id": "bbc-sport", "name": "BBC Sport" },
-    //       "author": "BBC Sport",
-    //       "title": "Shane Warne memorial - watch & follow updates",
-    //       "description": "Watch live coverage and follow text updates and tributes from the state memorial for Australian cricket legend Shane Warne at the Melbourne Cricket Ground.",
-    //       "url": "http://www.bbc.co.uk/sport/live/cricket/60916236",
-    //       "urlToImage": "https:////m.files.bbci.co.uk/modules/bbc-morph-sport-seo-meta/1.22.0/images/bbc-sport-logo.png",
-    //       "publishedAt": "2022-03-30T08:22:26.498888Z",
-    //       "content": "Former England bowler and BBC cricket presenter Isa Guha, who became a colleague of Warne's in the commentary box: \"It has been a strange few weeks - a lot of shock and then we did our own tribute at… [+396 chars]"
-    //     },
-    //     {
-    //       "source": { "id": "espn-cric-info", "name": "ESPN Cric Info" },
-    //       "author": null,
-    //       "title": "PCB hands Umar Akmal three-year ban from all cricket | ESPNcricinfo.com",
-    //       "description": "Penalty after the batsman pleaded guilty to not reporting corrupt approaches | ESPNcricinfo.com",
-    //       "url": "http://www.espncricinfo.com/story/_/id/29103103/pcb-hands-umar-akmal-three-year-ban-all-cricket",
-    //       "urlToImage": "https://a4.espncdn.com/combiner/i?img=%2Fi%2Fcricket%2Fcricinfo%2F1099495_800x450.jpg",
-    //       "publishedAt": "2020-04-27T11:41:47Z",
-    //       "content": "Umar Akmal's troubled cricket career has hit its biggest roadblock yet, with the PCB handing him a ban from all representative cricket for three years after he pleaded guilty of failing to report det… [+1506 chars]"
-    //     },
-    //     {
-    //       "source": { "id": "espn-cric-info", "name": "ESPN Cric Info" },
-    //       "author": null,
-    //       "title": "What we learned from watching the 1992 World Cup final in full again | ESPNcricinfo.com",
-    //       "description": "Wides, lbw calls, swing - plenty of things were different in white-ball cricket back then | ESPNcricinfo.com",
-    //       "url": "http://www.espncricinfo.com/story/_/id/28970907/learned-watching-1992-world-cup-final-full-again",
-    //       "urlToImage": "https://a4.espncdn.com/combiner/i?img=%2Fi%2Fcricket%2Fcricinfo%2F1219926_1296x729.jpg",
-    //       "publishedAt": "2020-03-30T15:26:05Z",
-    //       "content": "Last week, we at ESPNcricinfo did something we have been thinking of doing for eight years now: pretend-live ball-by-ball commentary for a classic cricket match. We knew the result, yes, but we tried… [+6823 chars]"
-    //     }
-        
-    //   ]
+  const News = ({name,country="in",category='general',language,type,sortBy})=>{ 
+
     const [loading, setLoading] = useState(true)
     const [articles, setArticles] = useState([])
     const [page, setPage] = useState(1)
     const [totalResults, setTotalResults] = useState(0)
-    const [searchBox, setSearchBox] = useState(false)
+    const [searchBox, setSearchBox] = useState(false);
     const [searchKeywords, setSearchKeywords] = useState("")
+    const [fetchMoreSkeleton,SetFetchMoreSkeleton] = useState(true);
+    const [noteWarning,setNoteWarning] = useState(false);
+
+    const {setProgress,apiKey,pageSize}= useContext(Maincontext);
+
+    const location = useLocation();
+
+  useEffect(() => {
+    // console.log(`The current route is ${location.pathname}`);
+    window.scroll(0,0);
+  }, [location]);
+
+    useEffect(() => { 
+      if(type==="everything"){
+        setSearchBox(true);
+      }
+      else{
+        setSearchBox(false);
+        return () =>updateNews(); //for development purpose so that api doesn't get called twice
+      }
+    }, [])
+
+    useEffect(() => {          
+      document.title = `${capitalizeFirstLetter(name==='general' ?'Top Headlines' : name)} - NewsFeed`;
+    }, [category])
     
     const capitalizeFirstLetter = (string)=> {
       return string.charAt(0).toUpperCase() + string.slice(1);
     }
     
     const  updateNews = async()=>{  
-      props.setProgress(10);
+      setProgress(10);
       setLoading(true);
-      await fetch(  `https://newsapi.org/v2/${props.type}?q=${props.type=== "everything" ? searchKeywords :""}&country=${props.country}&category=${props.category}&language=${props.language}&sortBy=${props.sortBy}&apiKey=${props.apiKey}&page=${page}&pageSize=${props.pageSize}`)
-      .then(res =>{ return  res.json()})
-      .then(
-        data => {
-          setArticles(data.articles),
-          setTotalResults(data.totalResults)
-        }
-        )
-      .catch(err=> console.log(err));
-      props.setProgress(40);
-      props.setProgress(70);
-      setLoading(false);
-      props.setProgress(100);
+      const apiUrl= `https://newsapi.org/v2/${type}?q=${type==="everything" ? searchKeywords :""}&country=${country}&category=${category}&language=${language}&sortBy=${sortBy}&apiKey=${apiKey}&page=${page}&pageSize=${pageSize}`;
+
+      try{
+        let response= await fetch(apiUrl);
+        // const status = 404;
+        // if(status===200){
+          if(response.status===200 ){
+            var data= await response.json();
+            // console.log(data);
+            // console.log(data.totalResults);
+            setArticles(data.articles);
+            setTotalResults(data.totalResults);
+            setNoteWarning(false);
+          }
+          else{
+            setArticles(LocalArticles);
+            setTotalResults(LocalArticles.length)
+            setNoteWarning(true);
+      }
+    }
+      catch(error){
+        console.log(error);
     }
 
-    useEffect(() => { 
-      if(props.type==="everything"){
-        setSearchBox(true);
-      }
-      else{
-        setSearchBox(false);
-        // updateNews();
-        setArticles(LocalArticles)
-      }
-    }, [])
+    setProgress(40);
+    setProgress(70);
+    setLoading(false);
+    setProgress(100);
+    }
 
-    useEffect(() => {          
-      document.title = `${capitalizeFirstLetter(props.name)} - NewsMonkey`;
-    }, [props.category])
-        
-    const fetchMoreData = async ()=>{
-      const url = `https://newsapi.org/v2/${props.type}?q=${props.type === "everything" ? searchKeywords :""}&country=${props.country}&category=${props.category}&language=${props.language}&sortBy=${props.sortBy}&apiKey=${props.apiKey}&page=${page+1}&pageSize=${props.pageSize}`;
-      setPage( page + 1)
-      let data= await fetch(url);
-      let parsedData = await data.json();
-      setArticles( articles.concat(parsedData.articles))
-      setTotalResults( parsedData.totalResults);
+      const fetchMoreData = async ()=>{
+      const url = `https://newsapi.org/v2/${type}?q=${type === "everything" ? searchKeywords :""}&country=${country}&category=${category}&language=${language}&sortBy=${sortBy}&apiKey=${apiKey}&page=${page+1}&pageSize=${pageSize}`;
+      try{
+        let response= await fetch(url);
+        if(response.status===200){
+          // if(response.status!==404 && response.status!==426 && response.status!==429){
+          // console.log(response.status)
+        setPage( page + 1)
+        let data = await response.json();
+        setArticles( [...articles,...data.articles])
+        // setArticles( articles?.concat(data.articles))
+        setTotalResults( data.totalResults);
+        // console.log('more data fetched');
+        }
+        else{
+          SetFetchMoreSkeleton(false);
+        }
+      }
+      catch(error){
+        console.log(error);
+    }
     }
 
     return (
       <>
-        <h1 className='text-center' style={{margin: "70px 0px 15px 0px"}}>NewsMonkey - Top {capitalizeFirstLetter(props.name)} Headlines</h1>
-        {searchBox && <SearchKeyword setSearchBox={setSearchBox} setSearchKeywords={setSearchKeywords} updateNews={updateNews} />}
-        {(loading && props.type!== "everything") && (<Spinner/>)}
+        <h1 className='text-center' style={{margin: "70px 0px 15px 0px"}}>NewsFeed - Top {capitalizeFirstLetter(name!=="general" ? name :'')} Headlines</h1>
+        {searchBox && <SearchKeyword searchKeywords={searchKeywords} setSearchKeywords={setSearchKeywords} updateNews={updateNews} />}
+        {/* {noteWarning && <>  <br /> <h1 className='text-center '>NOTE : Following content is not real-time News updates </h1> <br /> </>} */}
+        {(loading && type!== "everything") && (<Skeleton/>)}
 
         <InfiniteScroll
-        dataLength={articles.length}
+        dataLength={articles?.length}
         next={fetchMoreData}
-        hasMore={articles.length !== totalResults && articles.length<100}
-        loader={<Spinner/>}
-        endMessage={<EndMessage loading={loading} articles={articles}/>}>
+        // hasMore={articles?.length !== totalResults && articles?.length<pageSize}
+        hasMore={articles?.length !== totalResults && articles?.length<100}
+        // loader={<Skeleton/>}
+        endMessage={<EndMessage loading={loading} articles={articles} SetFetchMoreSkeleton={SetFetchMoreSkeleton}/>}
+        >
 
         <div className="container">
         <div className="row">
-        {articles.map((element)=>{
-          return  <div className="col-md-4 " key={element.url}> 
-            <NewsItem title={element.title?element.title :""} description={element.description?element.description :""}  newsUrl={element.url} imageUrl={element.urlToImage} author={element.author} date={element.publishedAt} source={ element.source.name}/>
+        {articles?.filter((element) => element.url !== 'https://removed.com').map((element)=>{
+          // if(element.url==='https://removed.com') {console.log("fault cards triggered")}
+          return  <div className="col-md-4 " key={element?.url}> 
+            <NewsItem title={element?.title?element?.title :""} description={element?.description?element?.description :""}  newsUrl={element?.url} imageUrl={element?.urlToImage} author={element?.author} date={element?.publishedAt} source={ element?.source?.name}/>
+            {/* {console.log(articles.length) } */}
+            {/* { console.log( index-1)} */}
+            {/* {articles.length== (index+1) &&
+            } */}
             </div>
         })}
+          {/* {!hasMore && <FetchMoreSkeleton/>} */}
+          {fetchMoreSkeleton && <FetchMoreSkeleton/>}
         </div>
         </div>
         </InfiniteScroll>
+        {/* {!fetchMoreSkeleton && <EndMessage loading={loading} articles={articles} SetFetchMoreSkeleton={SetFetchMoreSkeleton}/>} */}
     </>
     )
   }
-
-News.defaultProps = {
-  country: "in",
-  pageSize: 38,
-  category: "general",
-}
-News.propTypes = {
-  name: propTypes.string,
-  country: propTypes.string,
-  pageSize: propTypes.number,
-  category: propTypes.string,
-}
-export default News
+export default News;

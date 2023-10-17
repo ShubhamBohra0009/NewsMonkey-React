@@ -1,28 +1,17 @@
-import React, {useState,useEffect}from 'react'
+import React from 'react'
 
-export default function SearchKeyword(props) {
-  const [keywords, setKeywords] = useState("");
-
-  const handleOnChange = (event)=>{
-    setKeywords(event.target.value);
-  }
-  
-  const clickFunction = ()=>{
-    props.updateNews();
-  }
-  useEffect(() => {
-    props.setSearchKeywords(keywords);
-  }, [clickFunction])
-
+export default function SearchKeyword({searchKeywords,setSearchKeywords,updateNews}) {
+ 
   return (
     <>
-    <main className='d-flex justify-content-center '>
-    <div className=' container card text-center mx-2 mb-2 ' style={{maxWidth: "25rem"}}>
+    <main className='d-flex justify-content-center  '>
+    <div className=' container card  mx-2 mb-2  ' style={{maxWidth: "25rem"}}>
     <div className="my-3">
-    <label htmlFor="keywords" className="form-label">Enter the keyword for News related to that keyword</label>
+    <label htmlFor="keywords" className="form-label mx-2 ">Enter the keyword for Searching News </label>
     <div className='d-flex '>
-    <input  type="text" className="form-control" id="keywords" placeholder="Eg. modi" value={keywords} onChange={handleOnChange} />
-    <button  className="btn btn-dark   mx-2" onClick={clickFunction} >Search</button>
+    <input type="text" className="form-control" id="keywords" placeholder="Tesla" value={searchKeywords} onChange={(e)=>setSearchKeywords(e.target.value)}
+     onKeyDown={(e)=>e.key==='Enter' && (searchKeywords.length>0 && updateNews()) } />
+    <button  className="btn btn-dark mx-2" onClick={updateNews} disabled={searchKeywords.length===0}>Search</button>
     </div>
     </div>
     </div>
