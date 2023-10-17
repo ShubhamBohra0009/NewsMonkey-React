@@ -37,7 +37,8 @@ import { useLocation } from 'react-router-dom';
       else{
         setSearchBox(false);
         console.log("inside useeffect")
-        return () =>updateNews(); //for development purpose so that api doesn't get called twice
+        // return () =>updateNews(); //for development purpose so that api doesn't get called twice
+        updateNews(); //for development purpose so that api doesn't get called twice
       }
     }, [])
 
